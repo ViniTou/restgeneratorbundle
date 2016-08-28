@@ -3,11 +3,11 @@
 
 namespace Voryx\RESTGeneratorBundle\Form\Type;
 
-use Doctrine\ORM\EntityManager;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Voryx\RESTGeneratorBundle\Form\DataTransformer\ArrayToIdTransformer;
+
 
 /**
  * Class VoryxEntityType
@@ -15,36 +15,21 @@ use Voryx\RESTGeneratorBundle\Form\DataTransformer\ArrayToIdTransformer;
  */
 class VoryxEntityType extends EntityType
 {
-
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * @param EntityManager $em
-     */
-
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
+    
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $view_transformer = new ArrayToIdTransformer($this->em, null);
-        $builder->addViewTransformer($view_transformer);
-//        $model_transformer = new UserToUsernameTransformer()
+//        $viewTransformer = new ArrayToIdTransformer($this->registry->getManager(), null);
+//        $builder->addViewTransformer($viewTransformer);
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
             array(
@@ -58,14 +43,6 @@ class VoryxEntityType extends EntityType
      */
     public function getParent()
     {
-        return 'entity';
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'voryx_entity';
+        return EntityType::class;
     }
 }
