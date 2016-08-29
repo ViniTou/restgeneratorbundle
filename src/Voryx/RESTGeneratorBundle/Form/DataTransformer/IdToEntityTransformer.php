@@ -5,7 +5,7 @@ namespace Voryx\RESTGeneratorBundle\Form\DataTransformer;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\DataTransformerInterface;
 
-class ArrayToIdTransformer implements DataTransformerInterface
+class IdToEntityTransformer implements DataTransformerInterface
 {
     /**
      * @var EntityManager
@@ -48,12 +48,14 @@ class ArrayToIdTransformer implements DataTransformerInterface
         }
 
         if (is_scalar($data)) {
-            return $data;
+            $repository = $this->getEm()->getRepository($this->getClass());
+            return $repository->find($data);
         }
 
         //@todo lookup entity's identifier.  Assuming that "id" is the identifier
         if (is_array($data) && isset($data['id'])) {
-            return $data['id'];
+            $repository = $this->getEm()->getRepository($this->getClass());
+            return $repository->find($data['id']);
         }
 
         return null;

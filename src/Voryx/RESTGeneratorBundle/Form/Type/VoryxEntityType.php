@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Voryx\RESTGeneratorBundle\Form\DataTransformer\ArrayToIdTransformer;
+use Voryx\RESTGeneratorBundle\Form\DataTransformer\IdToEntityTransformer;
 
 
 /**
@@ -16,15 +16,16 @@ use Voryx\RESTGeneratorBundle\Form\DataTransformer\ArrayToIdTransformer;
  */
 class VoryxEntityType extends EntityType
 {
-    
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-//        $viewTransformer = new ArrayToIdTransformer($this->registry->getManager(), null);
-//        $builder->addViewTransformer($viewTransformer);
+        $viewTransformer = new IdToEntityTransformer($this->registry->getManager(), $options['class']);
+        $builder->resetViewTransformers();
+        $builder->addViewTransformer($viewTransformer);
     }
 
     /**
