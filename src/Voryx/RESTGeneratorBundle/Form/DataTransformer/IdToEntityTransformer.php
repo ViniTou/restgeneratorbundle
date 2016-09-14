@@ -2,6 +2,7 @@
 
 namespace Voryx\RESTGeneratorBundle\Form\DataTransformer;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\DataTransformerInterface;
 
@@ -42,7 +43,6 @@ class IdToEntityTransformer implements DataTransformerInterface
      */
     public function reverseTransform($data)
     {
-
         if (!$data) {
             return null;
         }
@@ -52,10 +52,9 @@ class IdToEntityTransformer implements DataTransformerInterface
             return $repository->find($data);
         }
 
-        //@todo lookup entity's identifier.  Assuming that "id" is the identifier
-        if (is_array($data) && isset($data['id'])) {
+        if (is_array($data)) {
             $repository = $this->getEm()->getRepository($this->getClass());
-            return $repository->find($data['id']);
+            return new ArrayCollection($repository->findBy(['id' => $data]));
         }
 
         return null;
